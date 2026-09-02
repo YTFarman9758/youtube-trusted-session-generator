@@ -71,7 +71,10 @@ const generateMultiThread = async (): Promise<TokenResult> => {
 		logger.info("Generating tokens with multi-threading...");
 		const visitorData = await fetchVisitorData();
 
-		const workerCount = Math.max(1, cpus().length - 1);
+		const configuredWorkers = Number.parseInt(process.env.WORKERS || "4", 10);
+const workerCount = Number.isFinite(configuredWorkers)
+  ? Math.max(1, Math.min(configuredWorkers, 8))
+  : 4;
 
 		logger.info(`Starting ${workerCount} worker threads...`);
 
